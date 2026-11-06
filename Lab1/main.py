@@ -157,34 +157,29 @@ def line_segment(height, width, x0, y0, x1, y1, v_line, v_bg, filename):
     print(f"Яркость линии (0..255): {v_line}")
     print(f"Яркость фона (0..255): {v_bg}")
 
-    dx = abs(x1 - x0)
+
+    steep = abs(y1 - y0) > abs(x1 - x0)
+    if steep:
+        x0, y0 = y0, x0
+        x1, y1 = y1, x1
+    if x0 > x1:
+        x0, x1 = x1, x0
+        y0, y1 = y1, y0
+
+    dx = x1 - x0
     dy = abs(y1 - y0)
-
-    sx = 1 if x0 < x1 else -1
-    sy = 1 if y0 < y1 else -1
-
-    is_steep = dy > dx
-
-    if is_steep:
-        dx, dy = dy, dx
-
+    y_step = 1 if y0 < y1 else -1
     err = dx // 2
+    y = y0
 
-    x, y = x0, y0
-
-    for _ in range(dx + 1):
-        if is_steep:
-            px, py = y, x
-        else:
-            px, py = x, y
+    for x in range(x0, x1 + 1):
+        px, py = (y, x) if steep else (x, y)
         if 0 <= px < width and 0 <= py < height:
             image[py][px] = v_line
-
-        if err >= 0:
-            y += sy
-            err -= 2 * dx
-        err += 2 * dy
-        x += sx
+        err -= dy
+        if err < 0:
+            y += y_step
+            err += dx
 
     save_file(filename=filename, image=image)
     print()

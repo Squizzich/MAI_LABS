@@ -91,5 +91,5 @@ def valid_user_input_circle():
     v_bg = read_int("Введите яркость фона: ", 0, 255)
     filename = read_filename()
 
-    return height, width, cx, cy, radius, v_center, v_edge, v_bg, filename
+    return height, width, radius, cx, cy, v_center, v_edge, v_bg, filename
 
